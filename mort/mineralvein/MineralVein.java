@@ -9,9 +9,8 @@ import org.bukkit.event.Event.Type;
 import org.bukkit.Material;
 import java.io.File;
 import java.util.HashMap;
-import org.bukkit.World;
+import org.bukkit.World; 
 import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationNode;
 /**
  *
  * @author Martin

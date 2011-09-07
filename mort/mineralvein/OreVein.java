@@ -9,7 +9,7 @@ import org.bukkit.Material;
 /**
  *
  * @author Martin
- */
+ */  
 public class OreVein {
         public int block;
         public int offset;
