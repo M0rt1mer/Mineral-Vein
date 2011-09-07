@@ -1,0 +1,50 @@
+worlds:
+  default:
+    -
+        block: GOLD_ORE
+        seed: 35434
+        density: 3
+        thickness: 4
+        densityBonus: 0
+        heightAvg: 20
+        heightVar: 20
+    -
+        block: IRON_ORE
+        seed: 67436874
+        density: 4
+        thickness: 410
+        densityBonus: 0
+        heightAvg: 32
+        heightVar: 30
+    -
+        block: REDSTONE_ORE
+        seed: 4325483
+        density: 4
+        thickness: 4
+        densityBonus: 0
+        heightAvg: 10
+        heightVar: 10
+    -
+        block: DIAMOND_ORE
+        seed: 98746835
+        density: 3
+        thickness: 2
+        densityBonus: 0
+        heightAvg: 10
+        heightVar: 10
+    -
+        block: LAPIS_ORE
+        seed: 63834343
+        density: 3
+        thickness: 2
+        densityBonus: 0
+        heightAvg: 10
+        heightVar: 10
+    -
+        block: COAL_ORE
+        seed: 543543
+        density: 1
+        thickness: 16
+        densityBonus: 0.2f
+        heightAvg: 40
+        heightVar: 40
