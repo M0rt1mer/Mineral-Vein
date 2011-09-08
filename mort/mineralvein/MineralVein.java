@@ -19,7 +19,7 @@ public class MineralVein extends JavaPlugin{
     
     public static MineralVein plugin;
     public HashMap<World, OreVein[]> data = new HashMap<World, OreVein[]>();
-    public OreVein[] def;
+    public OreVein[] def = null;
     public Configuration conf;
     
     public MineralVein(){
@@ -31,7 +31,7 @@ public class MineralVein extends JavaPlugin{
         getServer().getPluginManager().registerEvent(Type.WORLD_INIT, new WorldList(), Priority.Low, this);
         
         conf = new Configuration( loadFile( "veins.yml" ) );
-        conf.load();        
+        conf.load();
     }
     
     @Override
@@ -40,14 +40,14 @@ public class MineralVein extends JavaPlugin{
     public OreVein[] getWorldData(World w){
         if(data.containsKey(w))
             return data.get(w);
-        else if ( conf.getNodeList(w.getName(), null)!=null ){
+        else if ( conf.getKeys().contains(w.getName()) ){
             data.put(w, OreVein.loadConf(conf.getNodeList(w.getName(), null)) );
             return data.get(w);
         }
         else if( def!=null )
             return def;
-        else if( conf.getNodeList("default", null)!=null ){
-            def = OreVein.loadConf(conf.getNodeList(w.getName(), null));
+        else if( conf.getKeys().contains("default") ){
+            def = OreVein.loadConf(conf.getNodeList("default", null));
             return def;
         }
         return null;

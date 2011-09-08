@@ -12,7 +12,7 @@ import org.bukkit.Material;
  */  
 public class OreVein {
         public int block;
-        public int offset;
+        public int seed;
         public double density;
         public double maxSpan;
         public double densBonus;
@@ -24,8 +24,8 @@ public class OreVein {
             for(int i=0;i<list.size();i++){
                 ConfigurationNode nd = list.get(i);
                 ret[i] = new OreVein();
-                ret[i].block = MineralVein.readMaterial(nd, "blockID", Material.STONE).getId();
-                ret[i].offset = nd.getInt("seed", 0);
+                ret[i].block = MineralVein.readMaterial(nd, "block", Material.STONE).getId();
+                ret[i].seed = nd.getInt("seed", 0);
                 ret[i].density = nd.getDouble("density", 1);
                 ret[i].maxSpan = nd.getDouble("thickness", 10);
                 ret[i].densBonus = nd.getDouble("densityBonus", 0);

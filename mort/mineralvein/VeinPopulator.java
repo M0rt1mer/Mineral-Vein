@@ -9,18 +9,32 @@ import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.Chunk;
 import java.util.HashSet;
+import java.util.HashMap;
+import org.bukkit.util.noise.NoiseGenerator;
+import org.bukkit.util.noise.SimplexNoiseGenerator;
 /** 
  *
  * @author Martin
  */
 public class VeinPopulator extends BlockPopulator{
-        //long[] count = new long[Ore.values().length];
-       // int chunks=0;
+    
+    private HashMap<World,NoiseGenerator[]> noise = new HashMap<World,NoiseGenerator[]>();
     
     @Override
     public void populate( World w, Random r, Chunk ch ){
         int stoneID = Material.STONE.getId();
         OreVein[] ores = MineralVein.plugin.getWorldData(w);
+        NoiseGenerator[] noiseGen;
+        if( !noise.containsKey(w) ){
+            noiseGen = new NoiseGenerator[ores.length];
+            for(int i=0;i<ores.length;i++){
+                noiseGen[i] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed );
+            }
+            noise.put(w, noiseGen);
+            }
+        else
+            noiseGen = noise.get(w);
+        
         double roll, chance;
         double[] heightCache = new double[ores.length];
         double[] densCache = new double[ores.length];
@@ -31,8 +45,8 @@ public class VeinPopulator extends BlockPopulator{
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
                 for(int i=0;i<ores.length;i++){
-                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],w.getSeed() );
-                    densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],w.getSeed() );
+                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i] );
+                    densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i] );
                     //if(ch.getX()==0 && ch.getZ()==0 && z==0)
                     //    System.out.println("Height: "+heightCache[ore.ordinal()]+"\tdens: "+densCache[ore.ordinal()]);
                 }
@@ -46,11 +60,10 @@ public class VeinPopulator extends BlockPopulator{
                     }
                     roll = r.nextDouble();
                     for(int i=0;i<ores.length;i++){
-                        chance = Math.max( getOreChance(x+ch.getX()*16,z+ch.getZ()*16,y,ores[i],w.getSeed(),heightCache[i],densCache[i] ), 0);
+                        chance = getOreChance(y,ores[i],w.getSeed(),heightCache[i],densCache[i] );
                         //if(x==0 && z==0 && ch.getX()==0 && ch.getZ()==0) System.out.println("Y: "+y+" "+ore+": "+chance);
                         if( roll < chance ){
                             w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeId(ores[i].block, false);
-                            //count[ore.ordinal()]++;
                             break;
                         }
                         else roll-= chance;
@@ -62,54 +75,19 @@ public class VeinPopulator extends BlockPopulator{
      //       System.out.println( ore+": "+((double)count[ore.ordinal()])/chunks );
     }
     
-    public double getOreChance( int x, int z, int y, OreVein ore, long seed, double veinHeight, double veinDensity ){
+    public double getOreChance( int y, OreVein ore, long seed, double veinHeight, double veinDensity ){
         //chance on exact same height - 50%
-        double chance = Math.abs(y-veinHeight);
+        double chance = Math.abs(y-veinHeight );
         if(chance>ore.maxSpan) return 0;
-        else return Math.sqrt(Math.cos( chance*Math.PI/ore.maxSpan ) +1)/4*veinDensity;
+        else return Math.max( ((Math.cos( chance*Math.PI/ore.maxSpan ) +1)/2)*veinDensity, 0);
     }
     
-    public double getVeinHeight(int x, int z, OreVein ore, long seed){
-        return getChance(seed+ore.offset, x, z)*ore.areaSpan*2+ore.areaHeight;
+    double getVeinHeight(double x, double z, OreVein ore, NoiseGenerator noise){
+        return noise.noise(x/80, z/80)*ore.areaSpan + ore.areaHeight;
     }
     
-    double getVeinDensity(int x, int z, OreVein ore, long seed){
-        return (getChance(seed+ore.offset+654357387474L, x, z)+ore.densBonus)*ore.density;
-    }
-    
-    //combines multiple noise functions, result should be -1 to 1
-    public static double getChance( long seed,int x,int z){
-        int[] width = {80,30,10};
-        double[] height = {0.7,0.2,0.1};
-        float result = 0;
-        for(int i=0;i<width.length;i++){
-            result += getNoise( seed,x,z,width[i] ) * height[i];
-            }
-        return result;
-    }
-    
-    public static float interpolatedHeight( int x, float span, long randSeed ){
-        float h1 = seededRandom( (int)Math.floor(x/span), randSeed );
-        float h2 = seededRandom( (int)Math.floor(x/span) + 1,randSeed );
-        float dist = ((x % span)+span)%span / span;
-        dist = (float) ( 1-Math.cos(dist*Math.PI) )/2;
-        return h1*(1-dist) + h2*dist;
-    }
-    
-    //returns -1 to +1
-    public static double getNoise( long seed, int x, int z, int spanWidth){
-        return (interpolatedHeight( x,spanWidth,seed )
-                *interpolatedHeight( z,spanWidth,seed+654384 )+
-                interpolatedHeight( x+z,spanWidth,seed+584868 )
-                *interpolatedHeight( z-x,spanWidth,seed+68445 )
-                )/2;
-    }
-    
-    private static Random rnd = new Random();
-    
-    public static float seededRandom( int x, long seed ){
-        rnd.setSeed(seed + x*619);
-        return rnd.nextFloat()*2-1;
+    double getVeinDensity(double x, double z, OreVein ore, NoiseGenerator noise){
+        return (noise.noise(x/80, z/80)+ore.densBonus)*ore.density;
     }
     
 }

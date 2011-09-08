@@ -1,19 +1,18 @@
-worlds:
-  default:
+default:
     -
         block: GOLD_ORE
         seed: 35434
         density: 3
         thickness: 4
-        densityBonus: 0
+        densityBonus: -0.2
         heightAvg: 20
         heightVar: 20
     -
         block: IRON_ORE
         seed: 67436874
         density: 4
-        thickness: 410
-        densityBonus: 0
+        thickness: 10
+        densityBonus: -0.1
         heightAvg: 32
         heightVar: 30
     -
@@ -21,7 +20,7 @@ worlds:
         seed: 4325483
         density: 4
         thickness: 4
-        densityBonus: 0
+        densityBonus: -0.4
         heightAvg: 10
         heightVar: 10
     -
@@ -29,7 +28,7 @@ worlds:
         seed: 98746835
         density: 3
         thickness: 2
-        densityBonus: 0
+        densityBonus: -0.4
         heightAvg: 10
         heightVar: 10
     -
@@ -37,7 +36,7 @@ worlds:
         seed: 63834343
         density: 3
         thickness: 2
-        densityBonus: 0
+        densityBonus: -0.4
         heightAvg: 10
         heightVar: 10
     -
@@ -45,6 +44,6 @@ worlds:
         seed: 543543
         density: 1
         thickness: 16
-        densityBonus: 0.2f
+        densityBonus: 0.2
         heightAvg: 40
         heightVar: 40
