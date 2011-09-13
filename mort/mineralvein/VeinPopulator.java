@@ -45,8 +45,8 @@ public class VeinPopulator extends BlockPopulator{
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
                 for(int i=0;i<ores.length;i++){
-                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i] );
-                    densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i] );
+                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].heightLength );
+                    densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].densLength );
                     //if(ch.getX()==0 && ch.getZ()==0 && z==0)
                     //    System.out.println("Height: "+heightCache[ore.ordinal()]+"\tdens: "+densCache[ore.ordinal()]);
                 }
@@ -82,12 +82,12 @@ public class VeinPopulator extends BlockPopulator{
         else return Math.max( ((Math.cos( chance*Math.PI/ore.maxSpan ) +1)/2)*veinDensity, 0);
     }
     
-    double getVeinHeight(double x, double z, OreVein ore, NoiseGenerator noise){
-        return noise.noise(x/80, z/80)*ore.areaSpan + ore.areaHeight;
+    double getVeinHeight(double x, double z, OreVein ore, NoiseGenerator noise, double heightLength){
+        return noise.noise(x/heightLength, z/heightLength)*ore.areaSpan + ore.areaHeight;
     }
     
-    double getVeinDensity(double x, double z, OreVein ore, NoiseGenerator noise){
-        return (noise.noise(x/80, z/80)+ore.densBonus)*ore.density;
+    double getVeinDensity(double x, double z, OreVein ore, NoiseGenerator noise, double densLength){
+        return (noise.noise(x/densLength, z/densLength)+ore.densBonus)*ore.density;
     }
     
 }

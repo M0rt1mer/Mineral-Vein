@@ -18,6 +18,8 @@ public class OreVein {
         public double densBonus;
         public double areaHeight;
         public double areaSpan;
+        public double heightLength;
+        public double densLength;
         
         public static OreVein[] loadConf( List<ConfigurationNode> list ){
             OreVein[] ret = new OreVein[list.size()];
@@ -31,6 +33,8 @@ public class OreVein {
                 ret[i].densBonus = nd.getDouble("densityBonus", 0);
                 ret[i].areaHeight = nd.getDouble("heightAvg", 32);
                 ret[i].areaSpan = nd.getDouble("heightVar", 20);
+                ret[i].heightLength = nd.getDouble("heightLength", 80);
+                ret[i].densLength = nd.getDouble("densLength", 80);
             }
             
             return ret;
