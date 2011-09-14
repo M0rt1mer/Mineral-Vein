@@ -1,4 +1,8 @@
 name: Mineral Vein
 load: startup
 main: mort.mineralvein.MineralVein
-version: 1.0
+version: 1.2
+commands:
+    mineralvein:
+        description: Apply MineralVein populator on exisiting world
+        usage: \<command> apply worldname [x] [y]

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+import org.bukkit.block.Biome;
 /** 
  *
  * @author Martin
@@ -44,9 +45,22 @@ public class VeinPopulator extends BlockPopulator{
         }
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
+                double exclusiveDens = 1;
                 for(int i=0;i<ores.length;i++){
                     heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].heightLength );
-                    densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].densLength );
+                    boolean canSpawn = true;
+                    if( ores[i].biomes!=null ){
+                        canSpawn=false;
+                        Biome bhere = ch.getBlock(x, 64, z).getBiome();
+                        for( Biome b : ores[i].biomes )
+                            if(bhere==b) canSpawn = true;
+                    }
+                    if(canSpawn)
+                        densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].densLength )*exclusiveDens;
+                    else
+                        densCache[i] = 0;
+                    if(ores[i].exclusive)
+                        exclusiveDens -= densCache[i];
                     //if(ch.getX()==0 && ch.getZ()==0 && z==0)
                     //    System.out.println("Height: "+heightCache[ore.ordinal()]+"\tdens: "+densCache[ore.ordinal()]);
                 }

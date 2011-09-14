@@ -1,61 +1,80 @@
 default:
     -
         block: GOLD_ORE
+        # block ID or name of this ore
         seed: 35434
+        # used for random generator, pick random different number for each vein
         density: 3
+        # ore chance multiplicator, default 1
         thickness: 4
-        densityBonus: -0.2
+        # maximal span from vein center, default 5
+        densityBonus: -0.5
+        # density modification. Random number is between -1 and 1, this is applied and result is ore spawn chance (negative is zero chance), default 0
         heightAvg: 20
+        # average height this vein spawn at, default 32
         heightVar: 20
+        # maximal random difference from heightAvg, default 20
         heightLength: 80
+        # distance in blocks between height slope change, default 80
         densLength: 80
+        # distance in blocks between density slope change, dafult 80
+        exclusive: false
+        # if this ore is present, it will block out any other ores (in column), default false;
+        #biomes: [forest,swamp]
+        # this vein will manifest in given biomes. default: all biomes
+        # biomes are: RAINFOREST, SWAMPLAND, SEASONAL_FOREST, FOREST, SAVANNA, SHRUBLAND, TAIGA, DESERT, PLAINS, ICE_DESERT, TUNDRA;
     -
         block: IRON_ORE
         seed: 67436874
         density: 4
         thickness: 10
-        densityBonus: -0.1
+        densityBonus: -0.4
         heightAvg: 32
         heightVar: 30
         heightLength: 80
         densLength: 80
+        exclusive: false
     -
         block: REDSTONE_ORE
         seed: 4325483
         density: 4
         thickness: 4
-        densityBonus: -0.4
+        densityBonus: -0.5
         heightAvg: 10
         heightVar: 10
         heightLength: 80
         densLength: 80
+        exclusive: false
     -
         block: DIAMOND_ORE
         seed: 98746835
         density: 3
         thickness: 2
-        densityBonus: -0.4
+        densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
         heightLength: 80
         densLength: 80
+        exclusive: false
     -
         block: LAPIS_ORE
         seed: 63834343
         density: 3
         thickness: 2
-        densityBonus: -0.4
+        densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
         heightLength: 80
         densLength: 80
+        exclusive: false
     -
         block: COAL_ORE
         seed: 543543
         density: 1
         thickness: 16
-        densityBonus: 0.2
+        densityBonus: -0.1
         heightAvg: 40
         heightVar: 40
         heightLength: 80
         densLength: 80
+        exclusive: false
