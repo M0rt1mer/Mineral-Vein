@@ -28,8 +28,6 @@ public class MineralVein extends JavaPlugin{
     public OreVein[] def = null;
     public Configuration conf;
     private WorldList listener;
-    public static HashSet<MVChunk> doneChunks = new HashSet<MVChunk>();
-    public static HashSet<World> applyWorlds = new HashSet<World>();
     
     public MineralVein(){
         plugin = this;
@@ -39,7 +37,6 @@ public class MineralVein extends JavaPlugin{
     public void onEnable(){
         listener = new WorldList();
         getServer().getPluginManager().registerEvent(Type.WORLD_INIT, listener, Priority.Low, this);
-        getServer().getPluginManager().registerEvent(Type.CHUNK_LOAD, listener, Priority.Monitor, plugin);
         
         getServer().getPluginCommand("mineralvein").setExecutor(this);
         
@@ -119,11 +116,6 @@ public class MineralVein extends JavaPlugin{
             cs.sendMessage("Given world not found");
             return true;
         }
-        if(applyWorlds.contains(w)){
-            cs.sendMessage("World repopulation disabled");
-            applyWorlds.remove(w);
-            return true;
-        }
         
         int x = 0;
         int z = 0;
@@ -140,36 +132,33 @@ public class MineralVein extends JavaPlugin{
         if(vein==null)
             vein = new VeinPopulator();
         Random r = new Random();
-        /*try{
-            applyChunk( w, w.getChunkAt(x, z), new HashSet<MVChunk>(), vein, r );
-        }catch (Exception e){e.printStackTrace();}*/
-        for( Chunk ch : w.getLoadedChunks() ){
-            vein.populate(w, r, ch);
-            doneChunks.add(new MVChunk(ch));
-        }
-        applyWorlds.add(w);
-        cs.sendMessage("World repopulation enabled");
+        try{
+            applyChunk( w, x, z, new HashSet<MVChunk>(), vein, r );
+        }catch (Exception e){e.printStackTrace();return true;}
+        cs.sendMessage("Mineral Vein applied succesfully");
         return true;
     }
     
-    /*private void applyChunk( World w, Chunk ch, HashSet<MVChunk> done, BlockPopulator pop, Random r ){
-        if(ch==null || done.contains( new MVChunk(ch) ) )
+    private void applyChunk( World w, int x, int z, HashSet<MVChunk> done, BlockPopulator pop, Random r ){
+        if(done.contains( new MVChunk(x,z) ) )
             return;
+        
         boolean unload = false;
-        if( w.isChunkLoaded(ch) ){
-            if( !w.loadChunk(ch.getX(), ch.getZ(), false) )
+        if( !w.isChunkLoaded( x,z ) ){
+            if( !w.loadChunk(x, z, false) )
                 return;
             unload = true;
         }
-        System.out.println(ch.getX()+"; "+ch.getZ() );
-        pop.populate(w, r, ch);
-        done.add( new MVChunk(ch) );
+        
+        pop.populate(w, r, w.getChunkAt(x, z) );
+        done.add( new MVChunk(x,z) );
         if(unload)
-            w.unloadChunk(ch.getX(), ch.getZ());
-        applyChunk( w, w.getChunkAt(ch.getX()+16, ch.getZ()), done, pop, r );
-        applyChunk( w, w.getChunkAt(ch.getX(), ch.getZ()+16), done, pop, r );
-        applyChunk( w, w.getChunkAt(ch.getX()-16, ch.getZ()), done, pop, r );
-        applyChunk( w, w.getChunkAt(ch.getX(), ch.getZ()-16), done, pop, r );
-    }*/
+            w.unloadChunk(x,z);
+        
+        applyChunk( w, x+1, z, done, pop, r );
+        applyChunk( w, x, z+1, done, pop, r );
+        applyChunk( w, x-1, z, done, pop, r );
+        applyChunk( w, x, z-1, done, pop, r );
+    }
     
 }

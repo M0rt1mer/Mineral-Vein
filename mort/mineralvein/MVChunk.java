@@ -4,16 +4,32 @@
  */
 package mort.mineralvein;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 /**
  *
  * @author Martin
  */
 public class MVChunk {
-    public Chunk ch;
+    public int x;
+    public int z;
+    
     public MVChunk(Chunk ch){
-        this.ch = ch;
+        this.x = ch.getX();
+        this.z = ch.getZ();
     }
+    
+    public MVChunk(int x, int z){
+        this.x = x;
+        this.z = z;
+    }
+    
+    @Override
     public int hashCode(){
-        return ( (ch.getX()&0xFFFF) <<16) + (ch.getZ()&0xFFFF)+ch.getWorld().hashCode();
+        return ( (x&0xFFFF) <<16) + (z&0xFFFF);
+    }
+    
+    @Override
+    public boolean equals(Object e){
+        return (e instanceof MVChunk) && (e.hashCode()==hashCode());
     }
 }
