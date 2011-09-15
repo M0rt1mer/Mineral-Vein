@@ -13,7 +13,7 @@ import org.bukkit.World;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.Chunk;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.generator.BlockPopulator;
 import java.util.HashSet;
 import java.util.Random;
@@ -42,6 +42,9 @@ public class MineralVein extends JavaPlugin{
         
         conf = new Configuration( loadFile( "veins.yml" ) );
         conf.load();
+        getServer().getPluginManager().addPermission( new org.bukkit.permissions.Permission("MineralVein.apply"));
+        
+        
     }
     
     @Override
@@ -107,6 +110,8 @@ public class MineralVein extends JavaPlugin{
     
     @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings){
+        if( !(cs instanceof ConsoleCommandSender) && !cs.hasPermission("MineralVein.apply") )
+            return false;
         if(strings.length<2 || !strings[0].equals("apply") ){
             cs.sendMessage( "Usage:" + cmnd.getUsage() );
             return true;
