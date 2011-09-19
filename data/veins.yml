@@ -4,12 +4,13 @@ default:
         # block ID or name of this ore
         seed: 35434
         # used for random generator, pick random different number for each vein
-        density: 3
+        density: 0.3
         # ore chance multiplicator, default 1
         thickness: 4
-        # maximal span from vein center, default 5
+        # maximal vertical span from vein center, default 5
         densityBonus: -0.5
         # density modification. Random number is between -1 and 1, this is applied and result is ore spawn chance (negative is zero chance), default 0
+        # e.g. 0.0 will result in 50% of columns covered in ore, -0.5 25%, -0.9 5%, -1 0%
         heightAvg: 20
         # average height this vein spawn at, default 32
         heightVar: 20
@@ -26,8 +27,8 @@ default:
     -
         block: IRON_ORE
         seed: 67436874
-        density: 4
-        thickness: 10
+        density: 0.4
+        thickness: 5
         densityBonus: -0.4
         heightAvg: 32
         heightVar: 30
@@ -37,35 +38,35 @@ default:
     -
         block: REDSTONE_ORE
         seed: 4325483
-        density: 4
-        thickness: 4
+        density: 0.7
+        thickness: 3
         densityBonus: -0.5
         heightAvg: 10
         heightVar: 10
-        heightLength: 80
-        densLength: 80
+        heightLength: 10
+        densLength: 30
         exclusive: false
     -
         block: DIAMOND_ORE
         seed: 98746835
-        density: 3
-        thickness: 2
+        density: 0.5
+        thickness: 3
         densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
-        heightLength: 80
-        densLength: 80
+        heightLength: 10
+        densLength: 40
         exclusive: false
     -
         block: LAPIS_ORE
         seed: 63834343
-        density: 3
-        thickness: 2
+        density: 0.6
+        thickness: 4
         densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
-        heightLength: 80
-        densLength: 80
+        heightLength: 10
+        densLength: 40
         exclusive: false
     -
         block: COAL_ORE
