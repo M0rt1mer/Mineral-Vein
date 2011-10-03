@@ -162,9 +162,10 @@ public class MineralVein extends JavaPlugin{
         
         pop.populate(w, r, w.getChunkAt(x, z) );
         done.add( new MVChunk(x,z) );
+        try{
         if(unload)
-            w.unloadChunk(x,z);
-        
+            w.unloadChunkRequest(x,z);
+        }catch (Exception e){}
         applyChunk( w, x+1, z, done, pop, r );
         applyChunk( w, x, z+1, done, pop, r );
         applyChunk( w, x-1, z, done, pop, r );

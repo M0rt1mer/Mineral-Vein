@@ -25,6 +25,8 @@ public class VeinPopulator extends BlockPopulator{
     public void populate( World w, Random r, Chunk ch ){
         int stoneID = Material.STONE.getId();
         OreVein[] ores = MineralVein.plugin.getWorldData(w);
+        if( ores==null ) //no ores defined for this worlds
+            return;
         NoiseGenerator[] noiseGen;
         if( !noise.containsKey(w) ){
             noiseGen = new NoiseGenerator[ores.length];
