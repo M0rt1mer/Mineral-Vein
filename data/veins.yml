@@ -23,7 +23,13 @@ default:
         # if this ore is present, it will block out any other ores (in column), default false;
         #biomes: [forest,swamp]
         # this vein will manifest in given biomes. default: all biomes
-        # biomes are: RAINFOREST, SWAMPLAND, SEASONAL_FOREST, FOREST, SAVANNA, SHRUBLAND, TAIGA, DESERT, PLAINS, ICE_DESERT, TUNDRA;
+        # biomes are (not all used by world gen): RAINFOREST, SWAMPLAND, SEASONAL_FOREST, FOREST, SAVANNA, SHRUBLAND, TAIGA, DESERT, PLAINS, ICE_DESERT, TUNDRA, HELL, SKY, OCEAN, RIVER, EXTREME_HILLS;;
+        mode: replace
+        # "add" will cause all already placed ore to remain, and this vein only to add new ores.
+        #any other value will cause the old ore to be removed
+        #exclude_biomes: [swampland]
+        #same as biomes setting, this time sets the biomes that are specifically excluded for this vein. Takes precedence over "biomes"
+        
     -
         block: IRON_ORE
         seed: 67436874
@@ -71,8 +77,8 @@ default:
     -
         block: COAL_ORE
         seed: 543543
-        density: 1
-        thickness: 16
+        density: 0.2
+        thickness: 8
         densityBonus: -0.1
         heightAvg: 40
         heightVar: 40

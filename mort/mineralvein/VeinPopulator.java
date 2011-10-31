@@ -29,9 +29,10 @@ public class VeinPopulator extends BlockPopulator{
             return;
         NoiseGenerator[] noiseGen;
         if( !noise.containsKey(w) ){
-            noiseGen = new NoiseGenerator[ores.length];
+            noiseGen = new NoiseGenerator[ores.length*2];
             for(int i=0;i<ores.length;i++){
-                noiseGen[i] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed );
+                noiseGen[i*2] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed );
+                noiseGen[i*2+1] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed * 5646468L );
             }
             noise.put(w, noiseGen);
             }
@@ -43,28 +44,20 @@ public class VeinPopulator extends BlockPopulator{
         double[] densCache = new double[ores.length];
         HashSet block = new HashSet();
         for(OreVein ore:ores){
-            block.add(ore.block);
+            if( !ore.addMode )
+                block.add(ore.block);
         }
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
                 double exclusiveDens = 1;
                 for(int i=0;i<ores.length;i++){
-                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].heightLength );
-                    boolean canSpawn = true;
-                    if( ores[i].biomes!=null ){
-                        canSpawn=false;
-                        Biome bhere = ch.getBlock(x, 64, z).getBiome();
-                        for( Biome b : ores[i].biomes )
-                            if(bhere==b) canSpawn = true;
-                    }
-                    if(canSpawn)
-                        densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i], ores[i].densLength )*exclusiveDens;
+                    heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i*2], ores[i].heightLength );
+                    if( biomeChecks( ch.getBlock(x, 64, z).getBiome() , ores[i]) )
+                        densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i*2+1], ores[i].densLength ) * exclusiveDens;
                     else
                         densCache[i] = 0;
                     if(ores[i].exclusive)
                         exclusiveDens -= densCache[i];
-                    //if(ch.getX()==0 && ch.getZ()==0 && z==0)
-                    //    System.out.println("Height: "+heightCache[ore.ordinal()]+"\tdens: "+densCache[ore.ordinal()]);
                 }
                 for(int y=0;y<128;y++){
                     int blockType = w.getBlockTypeIdAt(x+ch.getX()*16,y,z+ch.getZ()*16);
@@ -77,7 +70,6 @@ public class VeinPopulator extends BlockPopulator{
                     roll = r.nextDouble();
                     for(int i=0;i<ores.length;i++){
                         chance = getOreChance(y,ores[i],w.getSeed(),heightCache[i],densCache[i] );
-                        //if(x==0 && z==0 && ch.getX()==0 && ch.getZ()==0) System.out.println("Y: "+y+" "+ore+": "+chance);
                         if( roll < chance ){
                             w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeId(ores[i].block, false);
                             break;
@@ -86,9 +78,6 @@ public class VeinPopulator extends BlockPopulator{
                     }
                 }
             }
-        //chunks++;
-     //   for(Ore ore:ores)
-     //       System.out.println( ore+": "+((double)count[ore.ordinal()])/chunks );
     }
     
     public double getOreChance( int y, OreVein ore, long seed, double veinHeight, double veinDensity ){
@@ -104,6 +93,22 @@ public class VeinPopulator extends BlockPopulator{
     
     double getVeinDensity(double x, double z, OreVein ore, NoiseGenerator noise, double densLength){
         return (noise.noise(x/densLength, z/densLength)+ore.densBonus)*ore.density;
+    }
+    
+    public boolean biomeChecks( Biome bm, OreVein ore ){
+        if( ore.noBiomes != null )
+            for( Biome biome : ore.noBiomes ){
+                if( bm.equals(biome) )
+                    return false;
+            }
+        if(ore.biomes == null)
+            return true;
+        for( Biome biome : ore.biomes ){
+                if( bm.equals(biome) )
+                    return true;
+            }
+        
+        return false;
     }
     
 }

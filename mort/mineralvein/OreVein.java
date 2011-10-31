@@ -22,7 +22,9 @@ public class OreVein {
         public double heightLength;
         public double densLength;
         public boolean exclusive;
+        public boolean addMode;
         public Biome[] biomes;
+        public Biome[] noBiomes;
         
         public static OreVein[] loadConf( List<ConfigurationNode> list ){
             OreVein[] ret = new OreVein[list.size()];
@@ -39,10 +41,15 @@ public class OreVein {
                 ret[i].heightLength = nd.getDouble("heightLength", 80);
                 ret[i].densLength = nd.getDouble("densLength", 80);
                 ret[i].exclusive = nd.getBoolean("exclusive", false);
+                ret[i].addMode = nd.getString("mode", "").equals("add");
                 if(nd.getProperty("biomes")!=null){
                     //System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
                     ret[i].biomes = convertStringList( nd.getStringList("biomes", null) );}
                 else ret[i].biomes = null;
+                if(nd.getProperty("exclude_biomes")!=null){
+                    //System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
+                    ret[i].noBiomes = convertStringList( nd.getStringList("exclude_biomes", null) );}
+                else ret[i].noBiomes = null;
                 
             }
             

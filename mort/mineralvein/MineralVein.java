@@ -138,18 +138,25 @@ public class MineralVein extends JavaPlugin{
         
         int x = 0;
         int z = 0;
+        int width = 100;
+        int height = 100;
         if(strings.length>2)
             x = Integer.parseInt( strings[2] );
         if(strings.length>3)
             z = Integer.parseInt( strings[3] );
         
-        getServer().getScheduler().scheduleAsyncDelayedTask(this, new WorldApplier(w,x,z,cs) );
+        if(strings.length>4)
+            width = Integer.parseInt( strings[4] );
+        if(strings.length>5)
+            height = Integer.parseInt( strings[4] );
+        
+        new Thread( new WorldApplier(w,x,z,cs, width, height) ).run();
         
         cs.sendMessage("Mineral Vein application started");
         return true;
     }
     
-    protected static void applyChunk( World w, int x, int z, HashSet<MVChunk> done, BlockPopulator pop, Random r ){
+    /*protected static void applyChunk( World w, int x, int z, HashSet<MVChunk> done, BlockPopulator pop, Random r ){
         if(done.contains( new MVChunk(x,z) ) )
             return;
         
@@ -166,13 +173,28 @@ public class MineralVein extends JavaPlugin{
         if(unload)
             w.unloadChunkRequest(x,z);
         }catch (Exception e){}
-        applyChunk( w, x+1, z, done, pop, r );
+        /*applyChunk( w, x+1, z, done, pop, r );
         applyChunk( w, x, z+1, done, pop, r );
         applyChunk( w, x-1, z, done, pop, r );
         applyChunk( w, x, z-1, done, pop, r );
+    }*/
+    
+    protected static void applyChunkSimple( World w, int x, int z, BlockPopulator pop, Random r ){
+        boolean unload = false;
+        if( !w.isChunkLoaded( x,z ) ){
+            if( !w.loadChunk(x, z, false) )
+                return;
+            unload = true;
+        }
+        
+        pop.populate(w, r, w.getChunkAt(x, z) );
+        try{
+        if(unload)
+            w.unloadChunkRequest(x,z);
+        }catch (Exception e){}
     }
     
-    private class WorldApplier implements Runnable{
+    /*private class WorldApplier implements Runnable{
         private World w;
         int x;
         int z;
@@ -193,6 +215,37 @@ public class MineralVein extends JavaPlugin{
             if(vein==null)
                 vein = new VeinPopulator();
             MineralVein.applyChunk(w,x,z,new HashSet<MVChunk>(), vein, new Random() );
+            report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
+        }*/
+    
+    private class WorldApplier implements Runnable{
+        private World w;
+        int x;
+        int z;
+        int width;
+        int height;
+        CommandSender report;
+        public WorldApplier(World w, int x, int z, CommandSender cs, int width, int height){
+            this.w = w;
+            this.x = x;
+            this.z = z;
+            this.width = width;
+            this.height = height;
+            report = cs;
+        }
+        @Override
+        public void run(){
+            VeinPopulator vein = null;
+            Random rnd = new Random();
+            for( BlockPopulator pop : w.getPopulators() ){
+            if(pop instanceof VeinPopulator)
+                vein = (VeinPopulator) pop;
+            }
+            if(vein==null)
+                vein = new VeinPopulator();
+            for( int X = x-width; X<x+width;X++ )
+                for( int Z = z-width; Z<z+width;Z++ )
+                    MineralVein.applyChunkSimple(w,X,Z, vein, rnd );
             report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
         }
     }

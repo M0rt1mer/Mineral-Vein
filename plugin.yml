@@ -4,5 +4,5 @@ main: mort.mineralvein.MineralVein
 version: 1.3.2
 commands:
     mineralvein:
-        description: Apply MineralVein populator on exisiting world
-        usage: \<command> apply worldname [x] [y]
+        description: Apply MineralVein populator on exisiting world. (Width corresponds to x)
+        usage: \<command> apply worldname [x] [z] [width] [height]
