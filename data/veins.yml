@@ -15,6 +15,10 @@ default:
         # average height this vein spawn at, default 32
         heightVar: 20
         # maximal random difference from heightAvg, default 20
+        heightRel: false
+        # if true, result of heightAvg and heightVar calculation will be instead 
+        #treated as "relative" to maxHeight in that area (you should use floats for heightAvg/Car)
+        #dafaults to false
         heightLength: 80
         # distance in blocks between height slope change, default 80
         densLength: 80

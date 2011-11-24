@@ -15,7 +15,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.generator.BlockPopulator;
-import java.util.HashSet;
 import java.util.Random;
 /**
  *

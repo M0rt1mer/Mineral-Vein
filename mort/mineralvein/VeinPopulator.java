@@ -42,6 +42,7 @@ public class VeinPopulator extends BlockPopulator{
         double roll, chance;
         double[] heightCache = new double[ores.length];
         double[] densCache = new double[ores.length];
+        int maxHeight;
         HashSet block = new HashSet();
         for(OreVein ore:ores){
             if( !ore.addMode )
@@ -50,6 +51,7 @@ public class VeinPopulator extends BlockPopulator{
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
                 double exclusiveDens = 1;
+                maxHeight = ch.getWorld().getHighestBlockAt(x+ch.getX()*16, z+ch.getZ()*16).getY();
                 for(int i=0;i<ores.length;i++){
                     heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i*2], ores[i].heightLength );
                     if( biomeChecks( ch.getBlock(x, 64, z).getBiome() , ores[i]) )
@@ -58,6 +60,8 @@ public class VeinPopulator extends BlockPopulator{
                         densCache[i] = 0;
                     if(ores[i].exclusive)
                         exclusiveDens -= densCache[i];
+                    if( ores[i].heighRel )
+                        heightCache[i] *= maxHeight;
                 }
                 for(int y=0;y<128;y++){
                     int blockType = w.getBlockTypeIdAt(x+ch.getX()*16,y,z+ch.getZ()*16);
