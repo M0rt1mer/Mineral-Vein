@@ -149,7 +149,7 @@ public class MineralVein extends JavaPlugin{
         if(strings.length>5)
             height = Integer.parseInt( strings[4] );
         
-        new Thread( new WorldApplier(w,x,z,cs, width, height) ).run();
+        getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new WorldApplier(w,x,z,cs, width, height) );
         
         cs.sendMessage("Mineral Vein application started");
         return true;
