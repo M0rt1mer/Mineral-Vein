@@ -64,22 +64,6 @@ public class MineralVein extends JavaPlugin{
         }
         return null;
     }
-    
-    
-   public static Material readMaterial( org.bukkit.util.config.ConfigurationNode conf,
-            String key, Material def ){
-        String str = conf.getString( key );
-        int mat = conf.getInt( key,-1);
-        Material retMat = null;
-        
-        retMat = Material.getMaterial( mat );
-        if( retMat == null )
-            retMat = Material.getMaterial( str );
-        if( retMat == null )
-            retMat = def;
-        
-        return retMat;
-    }
         
     public File loadFile( String filename ){
         File fl = new File( this.getDataFolder()+ File.separator + filename );
@@ -155,29 +139,6 @@ public class MineralVein extends JavaPlugin{
         return true;
     }
     
-    /*protected static void applyChunk( World w, int x, int z, HashSet<MVChunk> done, BlockPopulator pop, Random r ){
-        if(done.contains( new MVChunk(x,z) ) )
-            return;
-        
-        boolean unload = false;
-        if( !w.isChunkLoaded( x,z ) ){
-            if( !w.loadChunk(x, z, false) )
-                return;
-            unload = true;
-        }
-        
-        pop.populate(w, r, w.getChunkAt(x, z) );
-        done.add( new MVChunk(x,z) );
-        try{
-        if(unload)
-            w.unloadChunkRequest(x,z);
-        }catch (Exception e){}
-        /*applyChunk( w, x+1, z, done, pop, r );
-        applyChunk( w, x, z+1, done, pop, r );
-        applyChunk( w, x-1, z, done, pop, r );
-        applyChunk( w, x, z-1, done, pop, r );
-    }*/
-    
     protected static void applyChunkSimple( World w, int x, int z, BlockPopulator pop, Random r ){
         boolean unload = false;
         if( !w.isChunkLoaded( x,z ) ){
@@ -192,30 +153,6 @@ public class MineralVein extends JavaPlugin{
             w.unloadChunkRequest(x,z);
         }catch (Exception e){}
     }
-    
-    /*private class WorldApplier implements Runnable{
-        private World w;
-        int x;
-        int z;
-        CommandSender report;
-        public WorldApplier(World w, int x, int z, CommandSender cs){
-            this.w = w;
-            this.x = x;
-            this.z = z;
-            report = cs;
-        }
-        @Override
-        public void run(){
-            VeinPopulator vein = null;
-            for( BlockPopulator pop : w.getPopulators() ){
-            if(pop instanceof VeinPopulator)
-                vein = (VeinPopulator) pop;
-            }
-            if(vein==null)
-                vein = new VeinPopulator();
-            MineralVein.applyChunk(w,x,z,new HashSet<MVChunk>(), vein, new Random() );
-            report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
-        }*/
     
     private class WorldApplier implements Runnable{
         private World w;

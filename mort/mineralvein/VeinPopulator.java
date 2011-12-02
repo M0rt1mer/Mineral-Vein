@@ -23,7 +23,7 @@ public class VeinPopulator extends BlockPopulator{
     
     @Override
     public void populate( World w, Random r, Chunk ch ){
-        int stoneID = Material.STONE.getId();
+        MVMaterial stoneID = new MVMaterial( Material.STONE );
         OreVein[] ores = MineralVein.plugin.getWorldData(w);
         if( ores==null ) //no ores defined for this worlds
             return;
@@ -46,7 +46,7 @@ public class VeinPopulator extends BlockPopulator{
         HashSet block = new HashSet();
         for(OreVein ore:ores){
             if( !ore.addMode )
-                block.add(ore.block);
+                block.add(ore.mat);
         }
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
@@ -64,10 +64,10 @@ public class VeinPopulator extends BlockPopulator{
                         heightCache[i] *= maxHeight;
                 }
                 for(int y=0;y<128;y++){
-                    int blockType = w.getBlockTypeIdAt(x+ch.getX()*16,y,z+ch.getZ()*16);
-                    if( blockType != stoneID ){
+                    MVMaterial blockType = new MVMaterial( w.getBlockAt(x+ch.getX()*16,y,z+ch.getZ()*16) );
+                    if( blockType.equals(stoneID) ){
                             if( block.contains(blockType) )
-                                w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeId(stoneID, false);
+                                w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeIdAndData(stoneID.id, stoneID.data, false);
                             else
                                 continue;
                     }
@@ -75,7 +75,7 @@ public class VeinPopulator extends BlockPopulator{
                     for(int i=0;i<ores.length;i++){
                         chance = getOreChance(y,ores[i],w.getSeed(),heightCache[i],densCache[i] );
                         if( roll < chance ){
-                            w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeId(ores[i].block, false);
+                            w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeIdAndData(ores[i].mat.id, ores[i].mat.data, false);
                             break;
                         }
                         else roll-= chance;

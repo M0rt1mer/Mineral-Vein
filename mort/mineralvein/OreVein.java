@@ -12,7 +12,7 @@ import org.bukkit.block.Biome;
  * @author Martin
  */  
 public class OreVein {
-        public int block;
+        public MVMaterial mat;
         public int seed;
         public double density;
         public double maxSpan;
@@ -32,7 +32,7 @@ public class OreVein {
             for(int i=0;i<list.size();i++){
                 ConfigurationNode nd = list.get(i);
                 ret[i] = new OreVein();
-                ret[i].block = MineralVein.readMaterial(nd, "block", Material.STONE).getId();
+                ret[i].mat = new MVMaterial( nd.getString("block","0") );
                 ret[i].seed = nd.getInt("seed", 6516);
                 ret[i].density = nd.getDouble("density", 1);
                 ret[i].maxSpan = nd.getDouble("thickness", 5);

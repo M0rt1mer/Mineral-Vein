@@ -1,7 +1,7 @@
 default:
     -
         block: GOLD_ORE
-        # block ID or name of this ore
+        # block, that represents this ore. Use name, block ID, or XX-YY for blockID and data
         seed: 35434
         # used for random generator, pick random different number for each vein
         density: 0.3
