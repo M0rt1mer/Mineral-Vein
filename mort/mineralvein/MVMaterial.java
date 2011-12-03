@@ -55,10 +55,10 @@ public class MVMaterial {
     
     @Override
     public boolean equals( Object obj ){
-        return (obj instanceof MVMaterial) && obj.equals( (MVMaterial)obj );
+        return (obj instanceof MVMaterial) && equalsMat( (MVMaterial)obj );
     }
     
-    public boolean equals( MVMaterial mat ){
+    public boolean equalsMat( MVMaterial mat ){
         return mat.data==data && mat.id==id;
     }
 }

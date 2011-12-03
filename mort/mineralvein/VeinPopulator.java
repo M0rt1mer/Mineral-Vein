@@ -13,6 +13,7 @@ import java.util.HashMap;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 /** 
  *
  * @author Martin
@@ -54,7 +55,7 @@ public class VeinPopulator extends BlockPopulator{
                 maxHeight = ch.getWorld().getHighestBlockAt(x+ch.getX()*16, z+ch.getZ()*16).getY();
                 for(int i=0;i<ores.length;i++){
                     heightCache[i] = getVeinHeight( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i*2], ores[i].heightLength );
-                    if( biomeChecks( ch.getBlock(x, 64, z).getBiome() , ores[i]) )
+                    if( biomeChecks( ch.getBlock(x, 64, z) , ores[i]) )
                         densCache[i] = getVeinDensity( x+ch.getX()*16,z+ch.getZ()*16,ores[i],noiseGen[i*2+1], ores[i].densLength ) * exclusiveDens;
                     else
                         densCache[i] = 0;
@@ -65,7 +66,7 @@ public class VeinPopulator extends BlockPopulator{
                 }
                 for(int y=0;y<128;y++){
                     MVMaterial blockType = new MVMaterial( w.getBlockAt(x+ch.getX()*16,y,z+ch.getZ()*16) );
-                    if( blockType.equals(stoneID) ){
+                    if( !blockType.equals(stoneID) ){
                             if( block.contains(blockType) )
                                 w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeIdAndData(stoneID.id, stoneID.data, false);
                             else
@@ -99,14 +100,19 @@ public class VeinPopulator extends BlockPopulator{
         return (noise.noise(x/densLength, z/densLength)+ore.densBonus)*ore.density;
     }
     
-    public boolean biomeChecks( Biome bm, OreVein ore ){
-        if( ore.noBiomes != null )
+    public boolean biomeChecks( Block bl, OreVein ore ){
+        Biome bm = null;
+        if( ore.noBiomes != null ){
+            bm = bl.getBiome();
             for( Biome biome : ore.noBiomes ){
                 if( bm.equals(biome) )
                     return false;
             }
+        }
         if(ore.biomes == null)
             return true;
+        if(bm==null) 
+           bm = bl.getBiome();
         for( Biome biome : ore.biomes ){
                 if( bm.equals(biome) )
                     return true;
