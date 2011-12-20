@@ -133,7 +133,7 @@ public class MineralVein extends JavaPlugin{
         if(strings.length>5)
             height = Integer.parseInt( strings[4] );
         
-        getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new WorldApplier(w,x,z,cs, width, height) );
+        getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w,x,z,cs, width, height), 0, 1 );
         
         cs.sendMessage("Mineral Vein application started");
         return true;
@@ -160,6 +160,7 @@ public class MineralVein extends JavaPlugin{
         int z;
         int width;
         int height;
+        int progress;
         CommandSender report;
         public WorldApplier(World w, int x, int z, CommandSender cs, int width, int height){
             this.w = w;
@@ -167,6 +168,7 @@ public class MineralVein extends JavaPlugin{
             this.z = z;
             this.width = width;
             this.height = height;
+            this.progress = -width;
             report = cs;
         }
         @Override
@@ -179,10 +181,13 @@ public class MineralVein extends JavaPlugin{
             }
             if(vein==null)
                 vein = new VeinPopulator();
-            for( int X = x-width; X<x+width;X++ )
-                for( int Z = z-width; Z<z+width;Z++ )
-                    MineralVein.applyChunkSimple(w,X,Z, vein, rnd );
-            report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
+            for( int Z = z-width; Z<z+width;Z++ )
+                    MineralVein.applyChunkSimple(w,x+progress,Z, vein, rnd );
+            progress++;
+            if(progress>width){
+                report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
+                MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
+            }
         }
     }
     
