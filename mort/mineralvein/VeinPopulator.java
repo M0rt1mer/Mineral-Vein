@@ -24,6 +24,8 @@ public class VeinPopulator extends BlockPopulator{
     
     @Override
     public void populate( World w, Random r, Chunk ch ){
+        if(MineralVein.plugin.debug)
+            System.out.print("Populating chunk "+ch+": ");
         MVMaterial stoneID = new MVMaterial( Material.STONE );
         OreVein[] ores = MineralVein.plugin.getWorldData(w);
         if( ores==null ) //no ores defined for this worlds
@@ -46,9 +48,14 @@ public class VeinPopulator extends BlockPopulator{
         int maxHeight;
         HashSet block = new HashSet();
         for(OreVein ore:ores){
-            if( !ore.addMode )
+            if( !ore.addMode ){
                 block.add(ore.mat);
+            if(MineralVein.plugin.debug)
+                System.out.print(ore.mat.id+"; ");
+            }
         }
+        if(MineralVein.plugin.debug)
+                System.out.println("");
         for(int x=0;x<16;x++)
             for(int z=0;z<16;z++){
                 double exclusiveDens = 1;

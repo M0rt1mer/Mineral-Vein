@@ -6,3 +6,4 @@ commands:
     mineralvein:
         description: Apply MineralVein populator on exisiting world. (Width corresponds to x)
         usage: \<command> apply worldname [x] [z] [width] [height]
+        permission: MineralVein.apply

@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
+import org.bukkit.permissions.PermissionDefault;
 /**
  *
  * @author Martin
@@ -27,6 +28,7 @@ public class MineralVein extends JavaPlugin{
     public OreVein[] def = null;
     public Configuration conf;
     private WorldList listener;
+    public boolean debug;
     
     public MineralVein(){
         plugin = this;
@@ -41,7 +43,13 @@ public class MineralVein extends JavaPlugin{
         
         conf = new Configuration( loadFile( "veins.yml" ) );
         conf.load();
-        getServer().getPluginManager().addPermission( new org.bukkit.permissions.Permission("MineralVein.apply"));
+        debug = conf.getBoolean("debug", false);
+        org.bukkit.permissions.Permission pm = new org.bukkit.permissions.Permission("MineralVein.apply");
+        pm.setDefault(PermissionDefault.OP);
+        getServer().getPluginManager().addPermission( pm );
+        //org.bukkit.permissions.PermissionAttachment pa = getServer().getConsoleSender().addAttachment(plugin);
+        //pa.setPermission(pm, true);
+
         
         
     }
@@ -93,8 +101,6 @@ public class MineralVein extends JavaPlugin{
     
     @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings){
-        if( !(cs instanceof ConsoleCommandSender) && !cs.hasPermission("MineralVein.apply") )
-            return false;
         if(strings.length<2 || !strings[0].equals("apply") ){
             cs.sendMessage( "Usage:" + cmnd.getUsage() );
             return true;
@@ -140,18 +146,18 @@ public class MineralVein extends JavaPlugin{
     }
     
     protected static void applyChunkSimple( World w, int x, int z, BlockPopulator pop, Random r ){
-        boolean unload = false;
+        //boolean unload = false;
         if( !w.isChunkLoaded( x,z ) ){
             if( !w.loadChunk(x, z, false) )
                 return;
-            unload = true;
+            //unload = true;
         }
         
         pop.populate(w, r, w.getChunkAt(x, z) );
-        try{
+        /*try{
         if(unload)
             w.unloadChunkRequest(x,z);
-        }catch (Exception e){}
+        }catch (Exception e){}*/
     }
     
     private class WorldApplier implements Runnable{
@@ -162,6 +168,8 @@ public class MineralVein extends JavaPlugin{
         int height;
         int progress;
         CommandSender report;
+        VeinPopulator vein;
+        Random rnd;
         public WorldApplier(World w, int x, int z, CommandSender cs, int width, int height){
             this.w = w;
             this.x = x;
@@ -170,20 +178,23 @@ public class MineralVein extends JavaPlugin{
             this.height = height;
             this.progress = -width;
             report = cs;
+            rnd = new Random();
+            for( BlockPopulator pop : w.getPopulators() ){
+                if(pop instanceof VeinPopulator)
+                    vein = (VeinPopulator) pop;
+                }
+            if(vein==null)
+                vein = new VeinPopulator();
         }
         @Override
         public void run(){
-            VeinPopulator vein = null;
-            Random rnd = new Random();
-            for( BlockPopulator pop : w.getPopulators() ){
-            if(pop instanceof VeinPopulator)
-                vein = (VeinPopulator) pop;
-            }
-            if(vein==null)
-                vein = new VeinPopulator();
+            report.sendMessage( "Application on "+w.getName()+": "+(Runtime.getRuntime().freeMemory()/1000000)+"MB, "+(((progress/(double)width)+0.5)*100)+"%" );
+            if( Runtime.getRuntime().freeMemory()<50000000 ){
+                return;}
             for( int Z = z-width; Z<z+width;Z++ )
                     MineralVein.applyChunkSimple(w,x+progress,Z, vein, rnd );
             progress++;
+            //report.sendMessage( "Application on "+w.getName()+": "+(Runtime.getRuntime().freeMemory()/1000000)+"MB, "+(progress/(double)width)+"%" );
             if(progress>width){
                 report.sendMessage( "MineralVein applied to world "+w.getName()+"." );
                 MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);

@@ -52,7 +52,9 @@ public class OreVein {
                     //System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
                     ret[i].noBiomes = convertStringList( nd.getStringList("exclude_biomes", null) );}
                 else ret[i].noBiomes = null;
-                
+                if(MineralVein.plugin.debug){
+                    System.out.println( "LOADED ORE: "+ret[i].mat.id );
+                }
             }
             
             return ret;
