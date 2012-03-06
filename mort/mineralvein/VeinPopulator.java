@@ -47,6 +47,7 @@ public class VeinPopulator extends BlockPopulator{
         double[] densCache = new double[ores.length];
         int maxHeight;
         HashSet block = new HashSet();
+        Block targetBlock;
         for(OreVein ore:ores){
             if( !ore.addMode ){
                 block.add(ore.mat);
@@ -71,11 +72,12 @@ public class VeinPopulator extends BlockPopulator{
                     if( ores[i].heighRel )
                         heightCache[i] *= maxHeight;
                 }
-                for(int y=0;y<128;y++){
-                    MVMaterial blockType = new MVMaterial( w.getBlockAt(x+ch.getX()*16,y,z+ch.getZ()*16) );
+                for(int y=0;y<w.getMaxHeight();y++){
+                    targetBlock = w.getBlockAt(x+ch.getX()*16,y,z+ch.getZ()*16);
+                    MVMaterial blockType = new MVMaterial( targetBlock );
                     if( !blockType.equals(stoneID) ){
                             if( block.contains(blockType) )
-                                w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeIdAndData(stoneID.id, stoneID.data, false);
+                                targetBlock.setTypeIdAndData(stoneID.id, stoneID.data, false);
                             else
                                 continue;
                     }
@@ -83,7 +85,7 @@ public class VeinPopulator extends BlockPopulator{
                     for(int i=0;i<ores.length;i++){
                         chance = getOreChance(y,ores[i],w.getSeed(),heightCache[i],densCache[i] );
                         if( roll < chance ){
-                            w.getBlockAt(x+ch.getX()*16, y, z+ch.getZ()*16).setTypeIdAndData(ores[i].mat.id, ores[i].mat.data, false);
+                            targetBlock.setTypeIdAndData(ores[i].mat.id, ores[i].mat.data, false);
                             break;
                         }
                         else roll-= chance;

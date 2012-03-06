@@ -4,16 +4,14 @@
  */
 package mort.mineralvein;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-import org.bukkit.Material;
-import java.io.File;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.world.WorldInitEvent;
 import java.util.HashMap;
 import org.bukkit.World; 
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
 import org.bukkit.permissions.PermissionDefault;
@@ -27,7 +25,7 @@ public class MineralVein extends JavaPlugin{
     public HashMap<World, OreVein[]> data = new HashMap<World, OreVein[]>();
     public OreVein[] def = null;
     public Configuration conf;
-    private WorldList listener;
+    private MVExecutor executor;
     public boolean debug;
     
     public MineralVein(){
@@ -36,67 +34,41 @@ public class MineralVein extends JavaPlugin{
     
     @Override
     public void onEnable(){
-        listener = new WorldList();
-        getServer().getPluginManager().registerEvent(Type.WORLD_INIT, listener, Priority.Low, this);
+        executor = new MVExecutor();
+        getServer().getPluginManager().registerEvent( WorldInitEvent.class, new MVListener(), EventPriority.LOW, executor, this);
+
+	getServer().getPluginCommand("mineralvein").setExecutor(this);
         
-        getServer().getPluginCommand("mineralvein").setExecutor(this);
-        
-        conf = new Configuration( loadFile( "veins.yml" ) );
-        conf.load();
+        conf = getConfig();
+	conf.options().copyDefaults(true);
+	saveConfig();
+
         debug = conf.getBoolean("debug", false);
         org.bukkit.permissions.Permission pm = new org.bukkit.permissions.Permission("MineralVein.apply");
-        pm.setDefault(PermissionDefault.OP);
+	pm.setDefault( PermissionDefault.OP );
         getServer().getPluginManager().addPermission( pm );
-        //org.bukkit.permissions.PermissionAttachment pa = getServer().getConsoleSender().addAttachment(plugin);
-        //pa.setPermission(pm, true);
-
-        
+      
         
     }
     
     @Override
-    public void onDisable(){}
+    public void onDisable(){
+    }
     
     public OreVein[] getWorldData(World w){
         if(data.containsKey(w))
             return data.get(w);
-        else if ( conf.getKeys().contains(w.getName()) ){
-            data.put(w, OreVein.loadConf(conf.getNodeList(w.getName(), null)) );
+        else if ( conf.contains(w.getName()) ){
+            data.put(w, OreVein.loadConf( conf.getMapList( w.getName() ) ) );
             return data.get(w);
         }
         else if( def!=null )
             return def;
-        else if( conf.getKeys().contains("default") ){
-            def = OreVein.loadConf(conf.getNodeList("default", null));
+        else if( conf.contains( "default" ) ){
+            def = OreVein.loadConf( conf.getMapList("default") );
             return def;
         }
         return null;
-    }
-        
-    public File loadFile( String filename ){
-        File fl = new File( this.getDataFolder()+ File.separator + filename );
-        //System.out.println("Attempting: "+"data/"+filename.replace('\\', '/'));
-        if( fl.exists() )
-            return fl;
-        java.io.InputStream is = this.getClass().getClassLoader()
-                .getResourceAsStream( "data/"+filename.replace('\\', '/') );
-
-        fl.getParentFile().mkdirs();
-        try{
-            fl.createNewFile();
-            java.io.FileOutputStream os = new java.io.FileOutputStream(fl);
-            int data;
-            while( (data = is.read() ) != -1 ){
-                os.write(data);
-            }
-            is.close();
-            os.flush();
-            os.close();
-        } catch (java.io.IOException ex){
-            System.out.println("Error creating/extracting file "+filename);
-            return null;
-        }
-        return fl;
     }
     
     @Override

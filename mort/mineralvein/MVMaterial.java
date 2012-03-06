@@ -14,16 +14,19 @@ public class MVMaterial {
     
     public int id;
     public byte data;
+    public boolean ignoreData = false;
     
     public MVMaterial( String str ){
         try{
             Material mat = Material.valueOf( str.toUpperCase() );
             id = mat.getId();
             data = 0;
+            ignoreData = true;
         }catch(Exception ef){
             try{
                 id = Integer.parseInt(str);
                 data = 0;
+                ignoreData = true;
             }catch(Exception e){
                 StringTokenizer tk = new StringTokenizer(str);
                 try{
@@ -46,6 +49,7 @@ public class MVMaterial {
     public MVMaterial( Material mat ){
         id = mat.getId();
         data = 0;
+        ignoreData = true;
     }
     
     @Override
@@ -59,6 +63,6 @@ public class MVMaterial {
     }
     
     public boolean equalsMat( MVMaterial mat ){
-        return mat.data==data && mat.id==id;
+        return mat.ignoreData || ignoreData || (mat.data==data && mat.id==id);
     }
 }
