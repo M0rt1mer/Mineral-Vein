@@ -31,27 +31,27 @@ public class OreVein {
             OreVein[] ret = new OreVein[lst.size()];
             for(int i=0;i<lst.size();i++){
 		MemoryConfiguration nd = new MemoryConfiguration();
-		nd.addDefaults( (Map<String,Object>) lst.get(i) );
+		nd.createSection( "sec", (Map<String,Object>) lst.get(i) );
                 ret[i] = new OreVein();
-                ret[i].mat = new MVMaterial( nd.getString("block","0") );
-                ret[i].seed = nd.getInt("seed", 6516);
-                ret[i].density = nd.getDouble("density", 1);
-                ret[i].maxSpan = nd.getDouble("thickness", 5);
-                ret[i].densBonus = nd.getDouble("densityBonus", 0);
-                ret[i].areaHeight = nd.getDouble("heightAvg", 32);
-                ret[i].areaSpan = nd.getDouble("heightVar", 20);
-                ret[i].heighRel = nd.getBoolean("heighRel", false);
-                ret[i].heightLength = nd.getDouble("heightLength", 80);
-                ret[i].densLength = nd.getDouble("densLength", 80);
-                ret[i].exclusive = nd.getBoolean("exclusive", false);
-                ret[i].addMode = nd.getString("mode", "").equals("add");
-                if( nd.contains("biomes") ){
+                ret[i].mat = new MVMaterial( nd.getString("sec.block","0") );
+                ret[i].seed = nd.getInt("sec.seed", 6516);
+                ret[i].density = nd.getDouble("sec.density", 1);
+                ret[i].maxSpan = nd.getDouble("sec.thickness", 5);
+                ret[i].densBonus = nd.getDouble("sec.densityBonus", 0);
+                ret[i].areaHeight = nd.getDouble("sec.heightAvg", 32);
+                ret[i].areaSpan = nd.getDouble("sec.heightVar", 20);
+                ret[i].heighRel = nd.getBoolean("sec.heighRel", false);
+                ret[i].heightLength = nd.getDouble("sec.heightLength", 80);
+                ret[i].densLength = nd.getDouble("sec.densLength", 80);
+                ret[i].exclusive = nd.getBoolean("sec.exclusive", false);
+                ret[i].addMode = nd.getString("sec.mode", "").equals("add");
+                if( nd.contains("sec.biomes") ){
                     //System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
-                    ret[i].biomes = convertStringList( nd.getStringList("biomes") );}
+                    ret[i].biomes = convertStringList( nd.getStringList("sec.biomes") );}
                 else ret[i].biomes = null;
-                if( nd.contains("exclude_biomes") ){
+                if( nd.contains("sec.exclude_biomes") ){
                     //System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
-                    ret[i].noBiomes = convertStringList( nd.getStringList("exclude_biomes") );}
+                    ret[i].noBiomes = convertStringList( nd.getStringList("sec.exclude_biomes") );}
                 else ret[i].noBiomes = null;
                 if(MineralVein.plugin.debug){
                     System.out.println( "LOADED ORE: "+ret[i].mat.id );

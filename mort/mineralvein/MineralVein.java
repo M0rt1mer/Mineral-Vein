@@ -9,12 +9,10 @@ import org.bukkit.event.world.WorldInitEvent;
 import java.util.HashMap;
 import org.bukkit.World; 
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
-import org.bukkit.permissions.PermissionDefault;
 /**
  *
  * @author Martin
@@ -44,8 +42,7 @@ public class MineralVein extends JavaPlugin{
 	saveConfig();
 
         debug = conf.getBoolean("debug", false);
-        org.bukkit.permissions.Permission pm = new org.bukkit.permissions.Permission("MineralVein.apply");
-	pm.setDefault( PermissionDefault.OP );
+        org.bukkit.permissions.Permission pm = new org.bukkit.permissions.Permission("mineralvein.apply");
         getServer().getPluginManager().addPermission( pm );
       
         
@@ -160,7 +157,7 @@ public class MineralVein extends JavaPlugin{
         }
         @Override
         public void run(){
-            report.sendMessage( "Application on "+w.getName()+": "+(Runtime.getRuntime().freeMemory()/1000000)+"MB, "+(((progress/(double)width)+0.5)*100)+"%" );
+            report.sendMessage( "Application on "+w.getName()+": "+(Runtime.getRuntime().freeMemory()/1000000)+"MB, "+(((progress/(double)width)+1)*50)+"%" );
             if( Runtime.getRuntime().freeMemory()<50000000 ){
                 return;}
             for( int Z = z-width; Z<z+width;Z++ )

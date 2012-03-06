@@ -63,6 +63,6 @@ public class MVMaterial {
     }
     
     public boolean equalsMat( MVMaterial mat ){
-        return mat.ignoreData || ignoreData || (mat.data==data && mat.id==id);
+        return (mat.ignoreData&&mat.id==id) || (ignoreData&&mat.id==id) || (mat.data==data && mat.id==id);
     }
 }
