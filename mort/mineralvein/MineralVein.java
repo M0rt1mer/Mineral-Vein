@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.generator.BlockPopulator;
 import java.util.Random;
+import org.bukkit.command.ConsoleCommandSender;
 /**
  *
  * @author Martin
@@ -42,9 +43,6 @@ public class MineralVein extends JavaPlugin{
 	saveConfig();
 
         debug = conf.getBoolean("debug", false);
-        org.bukkit.permissions.Permission pm = new org.bukkit.permissions.Permission("mineralvein.apply");
-        getServer().getPluginManager().addPermission( pm );
-      
         
     }
     
@@ -70,7 +68,9 @@ public class MineralVein extends JavaPlugin{
     
     @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings){
-        if(strings.length<2 || !strings[0].equals("apply") ){
+        if( !(cs instanceof ConsoleCommandSender) )
+	    return false;
+	if(strings.length<2 || !strings[0].equals("apply") ){
             cs.sendMessage( "Usage:" + cmnd.getUsage() );
             return true;
         }
