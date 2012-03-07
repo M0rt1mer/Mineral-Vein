@@ -68,8 +68,10 @@ public class MineralVein extends JavaPlugin{
     
     @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings){
-        if( !(cs instanceof ConsoleCommandSender) )
-	    return false;
+        if( !(cs instanceof ConsoleCommandSender) ){
+	    cs.sendMessage("Only console may call this");
+	    return true;
+	}
 	if(strings.length<2 || !strings[0].equals("apply") ){
             cs.sendMessage( "Usage:" + cmnd.getUsage() );
             return true;
