@@ -14,6 +14,7 @@ import org.bukkit.block.Biome;
 public class OreVein {
         public MVMaterial mat;
         public int seed;
+        public int heightSeed;
         public double density;
         public double maxSpan;
         public double densBonus;
@@ -35,6 +36,7 @@ public class OreVein {
                 ret[i] = new OreVein();
                 ret[i].mat = new MVMaterial( nd.getString("sec.block","0") );
                 ret[i].seed = nd.getInt("sec.seed", 6516);
+                ret[i].heightSeed = nd.getInt("sec.heightSeed", ret[i].seed);
                 ret[i].density = nd.getDouble("sec.density", 1);
                 ret[i].maxSpan = nd.getDouble("sec.thickness", 5);
                 ret[i].densBonus = nd.getDouble("sec.densityBonus", 0);
