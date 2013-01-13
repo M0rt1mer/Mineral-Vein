@@ -34,8 +34,8 @@ public class VeinPopulator extends BlockPopulator{
         if( !noise.containsKey(w) ){
             noiseGen = new NoiseGenerator[ores.length*2];
             for(int i=0;i<ores.length;i++){
-                noiseGen[i*2] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed );
-                noiseGen[i*2+1] = new SimplexNoiseGenerator( w.getSeed() * ores[i].heightSeed * 5646468L );
+                noiseGen[i*2] = new SimplexNoiseGenerator( w.getSeed() * ores[i].heightSeed );
+                noiseGen[i*2+1] = new SimplexNoiseGenerator( w.getSeed() * ores[i].seed * 5646468L );
             }
             noise.put(w, noiseGen);
             }
